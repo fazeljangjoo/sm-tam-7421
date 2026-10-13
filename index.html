@@ -118,6 +118,9 @@ label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 #modal.show{display:flex}
 #modal .box{width:100%;max-width:520px;color:#fff;text-align:center}
 #modal video,#modal .vimg{width:100%;max-height:68vh;border-radius:16px;background:#000;object-fit:contain}
+#modal .card button{background:var(--accent-soft);color:var(--ink)}
+#modal .card button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+#modal .card button.ghost{background:transparent;border:1px solid var(--line)}
 #modal .vinfo{margin:10px 0;font-size:14px}
 #modal button{background:rgba(255,255,255,.16);color:#fff}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30;max-width:90%;text-align:center}
@@ -184,6 +187,89 @@ function fmtMid(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:
 function fmtShort(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:'numeric',month:'short'}).format(fromIso(s));}catch(e){return s;}}
 function fmtDay(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'short',day:'numeric',month:'numeric'}).format(fromIso(s));}catch(e){return s;}}
 function daysBetween(a,b){return Math.round((fromIso(b)-fromIso(a))/86400000);}
+/* ---------- Jalali (Shamsi) calendar conversion ---------- */
+function jdiv(a,b){return ~~(a/b);}
+function jmod(a,b){return a-~~(a/b)*b;}
+var J_BREAKS=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+function jalCal(jy){
+  var bl=J_BREAKS.length,gy=jy+621,leapJ=-14,jp=J_BREAKS[0],jm,jump=0,leap,leapG,march,n,i;
+  if(jy<jp||jy>=J_BREAKS[bl-1])throw new Error('bad year');
+  for(i=1;i<bl;i+=1){jm=J_BREAKS[i];jump=jm-jp;if(jy<jm)break;leapJ=leapJ+jdiv(jump,33)*8+jdiv(jmod(jump,33),4);jp=jm;}
+  n=jy-jp;
+  leapJ=leapJ+jdiv(n,33)*8+jdiv(jmod(n,33)+3,4);
+  if(jmod(jump,33)===4&&jump-n===4)leapJ+=1;
+  leapG=jdiv(gy,4)-jdiv((jdiv(gy,100)+1)*3,4)-150;
+  march=20+leapJ-leapG;
+  if(jump-n<6)n=n-jump+jdiv(jump+4,33)*33;
+  leap=jmod(jmod(n+1,33)-1,4);
+  if(leap===-1)leap=4;
+  return {leap:leap,gy:gy,march:march};
+}
+function g2d(gy,gm,gd){
+  var d=jdiv((gy+jdiv(gm-8,6)+100100)*1461,4)+jdiv(153*jmod(gm+9,12)+2,5)+gd-34840408;
+  return d-jdiv(jdiv(gy+100100+jdiv(gm-8,6),100)*3,4)+752;
+}
+function d2g(jdn){
+  var j=4*jdn+139361631;
+  j=j+jdiv(jdiv(4*jdn+183187720,146097)*3,4)*4-3908;
+  var i=jdiv(jmod(j,1461),4)*5+308;
+  var gd=jdiv(jmod(i,153),5)+1,gm=jmod(jdiv(i,153),12)+1,gy=jdiv(j,1461)-100100+jdiv(8-gm,6);
+  return {gy:gy,gm:gm,gd:gd};
+}
+function j2d(jy,jm,jd){var r=jalCal(jy);return g2d(r.gy,3,r.march)+(jm-1)*31-jdiv(jm,7)*(jm-7)+jd-1;}
+function d2j(jdn){
+  var g=d2g(jdn),jy=g.gy-621,r=jalCal(jy),jdn1f=g2d(g.gy,3,r.march),jd,jm,k=jdn-jdn1f;
+  if(k>=0){if(k<=185){return {jy:jy,jm:1+jdiv(k,31),jd:jmod(k,31)+1};}k-=186;}
+  else{jy-=1;k+=179;if(r.leap===1)k+=1;}
+  jm=7+jdiv(k,30);jd=jmod(k,30)+1;
+  return {jy:jy,jm:jm,jd:jd};
+}
+function toJalali(gy,gm,gd){return d2j(g2d(gy,gm,gd));}
+function toGregorian(jy,jm,jd){return d2g(j2d(jy,jm,jd));}
+function jMonthLen(jy,jm){if(jm<=6)return 31;if(jm<=11)return 30;return jalCal(jy).leap===0?30:29;}
+var J_MONTHS=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+function jalaliOfIso(s){var p=s.split('-');var j=toJalali(+p[0],+p[1],+p[2]);return {y:j.jy,m:j.jm,d:j.jd};}
+function isoOfJalali(y,m,d){
+  d=Math.min(d,jMonthLen(y,m));
+  var g=toGregorian(y,m,d);return g.gy+'-'+pad(g.gm)+'-'+pad(g.gd);
+}
+function jpicker(pf,dr,yBack,yFwd){
+  var cy=jalaliOfIso(todayIso()).y,ys='',ms='',ds='',i;
+  for(i=cy-yBack;i<=cy+yFwd;i++)ys+='<option value="'+i+'"'+(i===dr.y?' selected':'')+'>'+num(i).replace(/٬/g,'')+'</option>';
+  for(i=1;i<=12;i++)ms+='<option value="'+i+'"'+(i===dr.m?' selected':'')+'>'+J_MONTHS[i-1]+'</option>';
+  for(i=1;i<=31;i++)ds+='<option value="'+i+'"'+(i===dr.d?' selected':'')+'>'+num(i)+'</option>';
+  return '<div class="row"><select data-v="'+pf+'d" aria-label="روز" style="flex:1;width:auto;min-width:0">'+ds+'</select><select data-v="'+pf+'m" aria-label="ماه" style="flex:1.7;width:auto;min-width:0">'+ms+'</select><select data-v="'+pf+'y" aria-label="سال" style="flex:1.3;width:auto;min-width:0">'+ys+'</select></div>';
+}
+
+/* ---------- doctor visit draft & program changes ---------- */
+var visitDraft=null,gotoDraft=null;
+function newDraft(){
+  var j=jalaliOfIso(todayIso());
+  return {y:j.y,m:j.m,d:j.d,note:'',np:false,keep:{},news:[]};
+}
+function isKeep(dr,e){return dr.keep[e.id]===undefined?!e.archivedAt:!!dr.keep[e.id];}
+function reactivate(e,date){
+  if(!e.archivedAt)return e;
+  if(e.archivedAt>date){delete e.archivedAt;return e;}
+  var c={id:uid(),name:e.name,desc:e.desc||'',target:e.target,unit:e.unit,addedAt:date,hasVideo:!!e.hasVideo};
+  if(e.hasVideo)c.vid=e.vid||e.id;
+  S.exercises.push(c);return c;
+}
+function applyProgram(vd,dr){
+  var names=[];
+  S.exercises.slice().forEach(function(e){
+    var keep=isKeep(dr,e);
+    if(keep){names.push(e.name);if(e.archivedAt)reactivate(e,vd);}
+    else if(!e.archivedAt){e.archivedAt=vd;}
+  });
+  dr.news.forEach(function(x){
+    var nm=(x.name||'').trim();if(!nm)return;
+    S.exercises.push({id:uid(),name:nm,desc:'',target:Math.max(1,parseInt(x.target,10)||1),unit:x.unit||'rep',addedAt:vd,hasVideo:false});
+    names.push(nm);
+  });
+  return names;
+}
+
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show');},2400);}
 function getLog(d,create){var l=S.logs[d];if(!l&&create){l=S.logs[d]={ex:{},pool:null,feel:null,acts:[]};}return l||null;}
 function exOn(d){return S.exercises.filter(function(e){return e.addedAt<=d&&(!e.archivedAt||e.archivedAt>d);});}
@@ -276,7 +362,7 @@ function viewToday(){
   var l=getLog(d,false)||{ex:{},pool:null,feel:null,acts:[]};
   var list=exOn(d),pct=dayPct(d),p100=pct==null?0:Math.round(pct*100);
   var C=2*Math.PI*48;
-  var h='<div class="datebar"><button data-a="prev" class="ghost">›</button><div class="t">'+(isToday?'امروز':esc(fmtFull(d)))+(isToday?'':'<div><button data-a="goToday" class="small">برگرد به امروز</button></div>')+'</div><button data-a="next" class="ghost">‹</button></div>';
+  var h='<div class="datebar"><button data-a="prev" class="ghost">›</button><div class="t">'+(isToday?'امروز':esc(fmtFull(d)))+'<div class="row" style="justify-content:center;margin-top:4px"><button data-a="openGoto" class="small">📅 انتخاب روز</button>'+(isToday?'':'<button data-a="goToday" class="small">امروز</button>')+'</div></div><button data-a="next" class="ghost">‹</button></div>';
   h+='<div class="hero"><div style="z-index:1"><div class="sm">'+greet()+'</div><div class="nm">'+esc(S.name)+' 👋</div><div class="dt">'+esc(fmtFull(d))+'</div></div>'+
      '<div class="ring"><svg width="112" height="112" viewBox="0 0 112 112"><circle cx="56" cy="56" r="48" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="10"/><circle cx="56" cy="56" r="48" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-p100/100)).toFixed(1)+'" style="transition:stroke-dashoffset .5s"/></svg><div class="c">'+(pct==null?'—':num(p100)+'٪')+'<small>پیشرفت روز</small></div></div></div>';
   h+='<div class="chips"><div class="chipx"><b>🔥 '+num(curStreak())+'</b>روز پشت‌سرهم</div><div class="chipx"><b>📸 '+num(photoDates().length)+'</b>عکس پیشرفت</div><div class="chipx"><b>🏊 '+num(weekPool())+'</b>استخر این هفته</div></div>';
@@ -290,13 +376,13 @@ function viewToday(){
   }
   // photo card
   var has=!!S.photos[d];
-  h+='<div class="card"><h2>عکس '+(isToday?'امروز':'این روز')+'</h2><div class="photocard">'+(has?'<img data-pt="'+d+'" alt="">':'<div class="ph">📷</div>')+'<div class="grow"><div class="muted" style="margin-bottom:8px">'+(has?'عکس ثبت شده. اگر خواستی عوضش کن.':'از دستت هر روز با همان زاویه و نور عکس بگیر تا پیشرفتت را ببینی.')+'</div><button class="primary" data-a="takePhoto" data-id="'+d+'">'+(has?'تعویض عکس':'📸 ثبت عکس')+'</button>'+(has?' <button class="ghost" data-a="viewPhoto" data-id="'+d+'">دیدن</button>':'')+'</div></div></div>';
+  h+='<div class="card"><h2>عکس '+(isToday?'امروز':'این روز')+'</h2><div class="photocard">'+(has?'<img data-pt="'+d+'" alt="">':'<div class="ph">📷</div>')+'<div class="grow"><div class="muted" style="margin-bottom:8px">'+(has?'عکس ثبت شده. اگر خواستی عوضش کن.':'از خودت هر روز با همان زاویه و نور عکس بگیر تا پیشرفتت را ببینی.')+'</div><button class="primary" data-a="takePhoto" data-id="'+d+'">'+(has?'تعویض عکس':'📸 ثبت عکس')+'</button>'+(has?' <button class="ghost" data-a="viewPhoto" data-id="'+d+'">دیدن</button>':'')+'</div></div></div>';
   if(!list.length){
     h+='<div class="card empty">هنوز حرکتی تعریف نشده.<div style="margin-top:10px"><button class="primary" data-a="tab" data-id="ex">رفتن به حرکت‌ها</button></div></div>';
   }
   list.forEach(function(e){
     var done=l.ex[e.id]||0,t=e.target||1,full=done>=t;
-    h+='<div class="card"><div class="row between"><div class="grow"><b>'+esc(e.name)+'</b>'+(full?' <span class="chip ok">کامل ✓</span>':'')+'<div class="muted">هدف روزانه: '+num(t)+' '+UNITS[e.unit||'rep']+'</div></div>'+(e.hasVideo?'<button class="small" data-a="play" data-id="'+e.id+'">▶ فیلم</button>':'')+'</div>';
+    h+='<div class="card"><div class="row between"><div class="grow"><b>'+esc(e.name)+'</b>'+(full?' <span class="chip ok">کامل ✓</span>':'')+'<div class="muted">هدف روزانه: '+num(t)+' '+UNITS[e.unit||'rep']+'</div></div>'+(e.hasVideo?'<button class="small" data-a="play" data-id="'+(e.vid||e.id)+'">▶ فیلم</button>':'')+'</div>';
     if(e.desc)h+='<div class="muted" style="margin-top:4px">'+esc(e.desc)+'</div>';
     h+='<div class="bar" style="margin-top:10px"><i style="width:'+Math.min(100,Math.round(done/t*100))+'%"></i></div>';
     h+='<div class="row between" style="margin-top:10px"><div class="stepper"><button data-a="dec" data-id="'+e.id+'">−</button><input type="number" inputmode="numeric" min="0" value="'+done+'" data-in="amt" data-id="'+e.id+'"><button data-a="inc" data-id="'+e.id+'">+</button></div><button class="'+(full?'ghost':'primary')+'" data-a="full" data-id="'+e.id+'">'+(full?'صفر کن':'همه‌اش را رفتم')+'</button></div></div>';
@@ -344,7 +430,7 @@ function viewEx(){
   act.forEach(function(e){
     h+='<div class="card"><b>'+esc(e.name)+'</b><div class="muted">'+num(e.target)+' '+UNITS[e.unit||'rep']+' در روز · اضافه‌شده '+esc(fmtShort(e.addedAt))+'</div>'+
       (e.desc?'<div class="muted" style="margin-top:4px">'+esc(e.desc)+'</div>':'')+
-      '<div class="row wrap" style="margin-top:10px">'+(e.hasVideo?'<button class="small" data-a="play" data-id="'+e.id+'">▶ فیلم</button>':'')+'<button class="small" data-a="editEx" data-id="'+e.id+'">ویرایش</button><button class="small danger" data-a="archEx" data-id="'+e.id+'">کنار گذاشتن</button></div></div>';
+      '<div class="row wrap" style="margin-top:10px">'+(e.hasVideo?'<button class="small" data-a="play" data-id="'+(e.vid||e.id)+'">▶ فیلم</button>':'')+'<button class="small" data-a="editEx" data-id="'+e.id+'">ویرایش</button><button class="small danger" data-a="archEx" data-id="'+e.id+'">کنار گذاشتن</button></div></div>';
   });
   if(old.length){
     h+='<h2 style="margin-top:18px">حرکت‌های قبلی</h2>';
@@ -356,7 +442,7 @@ function viewEx(){
 function viewProg(){
   var ds=photoDates(),h='<h1>پیشرفت من</h1><p class="sub">عکس‌های روزانه، کنار هم.</p>';
   if(!ds.length){
-    return h+'<div class="card empty"><div style="font-size:42px">📸</div>هنوز عکسی ثبت نشده.<div class="muted" style="margin:6px 0 12px">هر روز با همان زاویه و نور از دستت عکس بگیر؛ بعد از چند هفته می‌توانی فرقش را ببینی.</div><button class="primary" data-a="takePhoto" data-id="'+todayIso()+'">📸 عکس امروز</button></div>';
+    return h+'<div class="card empty"><div style="font-size:42px">📸</div>هنوز عکسی ثبت نشده.<div class="muted" style="margin:6px 0 12px">هر روز با همان زاویه و نور از خودت عکس بگیر؛ بعد از چند هفته می‌توانی فرقش را ببینی.</div><button class="primary" data-a="takePhoto" data-id="'+todayIso()+'">📸 عکس امروز</button></div>';
   }
   if(!cmpA||!S.photos[cmpA])cmpA=ds[0];
   if(!cmpB||!S.photos[cmpB])cmpB=ds[ds.length-1];
@@ -380,12 +466,27 @@ function viewDoc(){
   var past=vs.filter(function(v){return v.date<=todayIso();})[0];
   if(past){var n=daysBetween(past.date,todayIso());h+='<p class="sub">آخرین ویزیت: '+(n===0?'امروز':num(n)+' روز پیش')+'</p>';}
   else h+='<p class="sub">ویزیت‌ها و تغییر برنامه حرکتی را اینجا ثبت کن.</p>';
-  h+='<div class="card"><h2>ثبت ویزیت</h2><label>تاریخ</label><input id="vDate" type="date" value="'+todayIso()+'">'+
-    '<label>یادداشت (اختیاری)</label><textarea id="vNote" rows="2" maxlength="400" placeholder="دکتر چی گفت؟"></textarea>'+
-    '<label style="display:flex;align-items:center;gap:8px;color:var(--ink);font-size:15px;margin-top:12px"><input id="vNew" type="checkbox" style="width:22px;height:22px">حرکت‌های جدید گرفتم</label>'+
-    '<button class="primary" style="width:100%;margin-top:12px" data-a="addVisit">ثبت</button></div>';
+  if(!visitDraft)visitDraft=newDraft();
+  var dr=visitDraft;
+  h+='<div class="card"><h2>ثبت ویزیت</h2><label style="margin-top:0">تاریخ ویزیت</label>'+jpicker('v',dr,3,1)+
+    '<label>یادداشت (اختیاری)</label><textarea data-v="note" rows="2" maxlength="400" placeholder="دکتر چی گفت؟">'+esc(dr.note)+'</textarea>'+
+    '<label style="display:flex;align-items:center;gap:10px;color:var(--ink);font-size:15px;margin-top:12px"><input data-v="np" type="checkbox" style="width:22px;height:22px;flex:none"'+(dr.np?' checked':'')+'>دکتر برنامه حرکتی جدید داد</label>';
+  if(dr.np){
+    h+='<div style="background:var(--bg);border-radius:14px;padding:12px;margin-top:10px"><b>۱) حرکت‌های قبلی</b><div class="muted" style="margin-bottom:6px">آن‌هایی که دکتر نگه داشته را تیک بزن. بدون تیک، از برنامه کنار گذاشته می‌شوند (تاریخچه‌شان می‌ماند).</div>';
+    var allEx=S.exercises.filter(function(e){return !e.archivedAt;}).concat(S.exercises.filter(function(e){return e.archivedAt;}));
+    if(!allEx.length)h+='<div class="muted">هنوز حرکتی نداری؛ پایین حرکت تازه اضافه کن.</div>';
+    allEx.forEach(function(e){
+      h+='<label style="display:flex;align-items:center;gap:10px;color:var(--ink);font-size:15px;margin:6px 0"><input data-v="keep" data-id="'+e.id+'" type="checkbox" style="width:22px;height:22px;flex:none"'+(isKeep(dr,e)?' checked':'')+'><span class="grow">'+esc(e.name)+(e.archivedAt?' <span class="muted">(قبلی)</span>':'')+'</span><span class="muted">'+num(e.target)+' '+UNITS[e.unit||'rep']+'</span></label>';
+    });
+    h+='<b style="display:block;margin-top:14px">۲) حرکت‌های تازه</b>';
+    dr.news.forEach(function(x,i){
+      h+='<div style="border-top:1px solid var(--line);margin-top:8px;padding-top:8px"><input data-v="nn" data-i="'+i+'" value="'+esc(x.name)+'" placeholder="اسم حرکت" maxlength="80"><div class="row" style="margin-top:6px"><input data-v="nt" data-i="'+i+'" type="number" inputmode="numeric" min="1" value="'+esc(x.target)+'" style="flex:1"><select data-v="nu" data-i="'+i+'" style="flex:1">'+Object.keys(UNITS).map(function(k){return '<option value="'+k+'"'+(x.unit===k?' selected':'')+'>'+UNITS[k]+'</option>';}).join('')+'</select><button class="small danger" data-a="delNewRow" data-id="'+i+'">حذف</button></div></div>';
+    });
+    h+='<button class="small" style="margin-top:10px" data-a="addNewRow">＋ حرکت تازه</button><div class="muted" style="margin-top:8px">فیلم هر حرکت تازه را بعد از ثبت، از تب «حرکت‌ها» اضافه کن.</div></div>';
+  }
+  h+='<button class="primary" style="width:100%;margin-top:12px" data-a="addVisit">ثبت ویزیت</button></div>';
   vs.forEach(function(v){
-    h+='<div class="card"><div class="row between"><b>'+esc(fmtFull(v.date))+'</b><button class="small danger" data-a="delVisit" data-id="'+v.id+'">حذف</button></div>'+(v.newProgram?'<div style="margin-top:4px"><span class="chip">🆕 برنامه حرکتی جدید</span></div>':'')+(v.note?'<div class="muted" style="margin-top:6px">'+esc(v.note)+'</div>':'')+'</div>';
+    h+='<div class="card"><div class="row between"><b>'+esc(fmtFull(v.date))+'</b><button class="small danger" data-a="delVisit" data-id="'+v.id+'">حذف</button></div>'+(v.newProgram?'<div style="margin-top:4px"><span class="chip">🆕 برنامه حرکتی جدید</span></div>':'')+(v.prog&&v.prog.length?'<div class="muted" style="margin-top:6px">حرکت‌ها: '+esc(v.prog.join('، '))+'</div>':'')+(v.note?'<div class="muted" style="margin-top:6px">'+esc(v.note)+'</div>':'')+'</div>';
   });
   h+='<div class="card"><h2>تنظیمات و پشتیبان</h2><label style="margin-top:0">اسم</label><input id="sName" value="'+esc(S.name)+'" maxlength="40" data-in="name">'+
     '<label>هدف تمرین در هفته</label><select data-in="goal">'+[3,4,5,6,7].map(function(g){return '<option value="'+g+'"'+((S.goal||5)===g?' selected':'')+'>'+num(g)+' روز</option>';}).join('')+'</select>'+
@@ -587,7 +688,7 @@ function viewRep(){
     if(c>0)anyPool=true;
     pb.push({v:c/7,t:num(c),l:fmtShort(st)});
   }
-  h+='<div class="card"><h2>🏊 استخر در ۸ هفته اخیر</h2>'+(anyPool?barChart(pb,{max:1,yfmt:function(v){return num(Math.round(v*7));},vals:true,lf:9,every:2,c:null}):'<div class="muted" style="padding:6px 0">هنوز استخری ثبت نشده. استخر برای دست عالی است 😉</div>')+'</div>';
+  h+='<div class="card"><h2>🏊 استخر در ۸ هفته اخیر</h2>'+(anyPool?barChart(pb,{max:1,yfmt:function(v){return num(Math.round(v*7));},vals:true,lf:9,every:2,c:null}):'<div class="muted" style="padding:6px 0">هنوز استخری ثبت نشده. استخر برای بدن عالی است 😉</div>')+'</div>';
 
   // heatmap
   h+='<div class="card"><h2>تقویم ۲۸ روز اخیر</h2><div class="heat">';
@@ -695,8 +796,12 @@ function saveEx(){
   if(!e)return;
   e.name=name;e.desc=desc;e.target=target;e.unit=unit;
   var jobs=[];
-  if(removeVideo&&e.hasVideo){e.hasVideo=false;jobs.push(iDel('v',e.id));}
-  if(pendingFile){jobs.push(iPut('v',e.id,pendingFile).then(function(){e.hasVideo=true;}));}
+  if(removeVideo&&e.hasVideo){
+    e.hasVideo=false;
+    if(e.vid){e.vid=null;}
+    else if(!S.exercises.some(function(x){return x!==e&&x.vid===e.id;})){jobs.push(iDel('v',e.id));}
+  }
+  if(pendingFile){e.vid=null;jobs.push(iPut('v',e.id,pendingFile).then(function(){e.hasVideo=true;}));}
   Promise.all(jobs).then(function(){editing=null;pendingFile=null;removeVideo=false;save();render();toast('ذخیره شد');})
   .catch(function(){toast('فیلم ذخیره نشد؛ شاید جای گوشی کم است');save();render();});
 }
@@ -755,18 +860,48 @@ document.addEventListener('click',function(ev){
     case 'rmVideo':removeVideo=true;var n1=document.getElementById('fName').value,d1=document.getElementById('fDesc').value;render();document.getElementById('fName').value=n1;document.getElementById('fDesc').value=d1;break;
     case 'saveEx':saveEx();break;
     case 'archEx':if(confirm('این حرکت کنار گذاشته شود؟ تاریخچه‌اش می‌ماند.')){findEx(id).archivedAt=todayIso();save();render();}break;
-    case 'restoreEx':var r=findEx(id);delete r.archivedAt;save();render();break;
+    case 'restoreEx':reactivate(findEx(id),todayIso());save();render();toast('به برنامه برگشت');break;
     case 'addVisit':
-      S.visits.push({id:uid(),date:document.getElementById('vDate').value||todayIso(),note:document.getElementById('vNote').value.trim(),newProgram:document.getElementById('vNew').checked});
-      save();render();toast('ویزیت ثبت شد');break;
+      var dr2=visitDraft||newDraft(),vd=isoOfJalali(dr2.y,dr2.m,dr2.d),prog=null,addedN=0;
+      if(dr2.np){
+        var anyKeep=S.exercises.some(function(e){return isKeep(dr2,e);}),anyNew=dr2.news.some(function(x){return (x.name||'').trim();});
+        if(!anyKeep&&!anyNew&&!confirm('هیچ حرکتی انتخاب نشده؛ همه حرکت‌های فعلی کنار گذاشته می‌شوند. ادامه بدهم؟'))break;
+        addedN=dr2.news.filter(function(x){return (x.name||'').trim();}).length;
+        prog=applyProgram(vd,dr2);
+      }
+      S.visits.push({id:uid(),date:vd,note:(dr2.note||'').trim(),newProgram:!!dr2.np,prog:prog||undefined});
+      visitDraft=null;save();render();
+      toast(dr2.np?(addedN?'برنامه جدید ثبت شد؛ فیلم حرکت‌های تازه را از تب «حرکت‌ها» اضافه کن':'برنامه جدید ثبت شد'):'ویزیت ثبت شد');break;
+    case 'addNewRow':visitDraft=visitDraft||newDraft();visitDraft.news.push({name:'',target:10,unit:'rep'});render();break;
+    case 'delNewRow':visitDraft.news.splice(parseInt(id,10),1);render();break;
+    case 'openGoto':
+      gotoDraft=jalaliOfIso(viewDate);
+      showModal('<div class="card" style="color:var(--ink);text-align:right"><h2>رفتن به یک روز</h2>'+jpicker('g',gotoDraft,3,0)+'<div class="row" style="margin-top:12px"><button class="primary grow" data-a="doGoto">برو</button><button class="ghost" data-a="closeModal">بستن</button></div></div>');break;
+    case 'doGoto':
+      var gi=isoOfJalali(gotoDraft.y,gotoDraft.m,gotoDraft.d);
+      viewDate=gi>todayIso()?todayIso():gi;closeModal();tab='today';render();window.scrollTo(0,0);break;
     case 'delVisit':if(confirm('این ویزیت حذف شود؟')){S.visits=S.visits.filter(function(v){return v.id!==id;});save();render();}break;
     case 'range':rangeDays=parseInt(id,10);render();break;
     case 'export':doExport();break;
     case 'importPick':document.getElementById('impFile').click();break;
   }
 });
+function handleV(el,isChange){
+  var k=el.getAttribute('data-v'),i=parseInt(el.getAttribute('data-i'),10),id=el.getAttribute('data-id');
+  var map={vy:['y'],vm:['m'],vd:['d'],gy:['y'],gm:['m'],gd:['d']};
+  if(map[k]){var dr=k.charAt(0)==='v'?visitDraft:gotoDraft;if(dr&&isChange){dr[map[k][0]]=parseInt(el.value,10);}return;}
+  if(!visitDraft)visitDraft=newDraft();
+  if(k==='note'){visitDraft.note=el.value;}
+  else if(k==='np'&&isChange){visitDraft.np=el.checked;render();}
+  else if(k==='keep'&&isChange){visitDraft.keep[id]=el.checked;}
+  else if(k==='nn'&&visitDraft.news[i]){visitDraft.news[i].name=el.value;}
+  else if(k==='nt'&&visitDraft.news[i]){visitDraft.news[i].target=el.value;}
+  else if(k==='nu'&&isChange&&visitDraft.news[i]){visitDraft.news[i].unit=el.value;}
+}
+document.addEventListener('input',function(ev){var el=ev.target;if(el.getAttribute&&el.getAttribute('data-v'))handleV(el,false);});
 document.addEventListener('change',function(ev){
   var el=ev.target;
+  if(el.getAttribute&&el.getAttribute('data-v')){handleV(el,true);return;}
   if(el.id==='photoIn'){var pf=el.files&&el.files[0];el.value='';if(pf)handlePhoto(pf);return;}
   var k=el.getAttribute&&el.getAttribute('data-in');if(!k)return;
   if(k==='amt'){setAmt(el.getAttribute('data-id'),parseFloat(el.value));}
