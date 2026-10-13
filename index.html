@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f9d8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="تمرین‌های من">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>تمرین‌های سید محمد</title>
+<style>
+:root{
+  --bg:#f2f8f6;--card:#ffffff;--ink:#12302c;--muted:#68837f;--line:#e0ebe8;
+  --accent:#0f9d8a;--accent2:#1b6ca8;--accent-ink:#ffffff;--accent-soft:#dcf3ee;
+  --amber:#ffb020;--ok:#2e9e5b;--danger:#d64545;--shadow:0 6px 22px rgba(16,70,62,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0b1413;--card:#14211e;--ink:#e6f3f0;--muted:#8fb0aa;--line:#223630;--accent:#2fc4ae;--accent2:#3b93d4;--accent-ink:#04201b;--accent-soft:#16352e;--shadow:0 6px 22px rgba(0,0,0,.35);}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"SF Arabic","Geeza Pro",Tahoma,"Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.7;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+main{max-width:560px;margin:0 auto;padding:12px 14px 0}
+h1{font-size:21px;margin:6px 0 2px;font-weight:800}
+h2{font-size:17px;margin:0 0 8px;font-weight:800}
+.sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.wrap{flex-wrap:wrap}
+button{font-family:inherit;font-size:15px;border:0;border-radius:13px;padding:10px 14px;background:var(--accent-soft);color:var(--ink);cursor:pointer;font-weight:700;transition:transform .08s}
+button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+button.ghost{background:transparent;border:1px solid var(--line)}
+button.danger{background:transparent;color:var(--danger);border:1px solid var(--line)}
+button.small{padding:6px 11px;font-size:13px;border-radius:10px}
+button:active{transform:scale(.96)}
+input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+.nav button{flex:1;background:transparent;border-radius:12px;padding:5px 0;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center}
+.nav button span{font-size:21px;line-height:1.3}
+.nav button.on{color:var(--accent);background:var(--accent-soft)}
+.datebar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.datebar .t{text-align:center;font-weight:800;font-size:14px}
+.hero{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);color:#fff;border-radius:24px;padding:18px;margin-bottom:12px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.08);left:-60px;top:-70px}
+.hero .sm{font-size:13px;opacity:.9}
+.hero .nm{font-size:25px;font-weight:800;line-height:1.3}
+.hero .dt{font-size:12px;opacity:.85;margin-top:4px}
+.ring{position:relative;width:112px;height:112px;flex:none;z-index:1}
+.ring svg{transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:24px;line-height:1.1}
+.ring .c small{font-size:11px;font-weight:600;opacity:.9}
+.chips{display:flex;gap:8px;margin-bottom:12px}
+.chipx{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 6px;text-align:center;font-size:12px;color:var(--muted);box-shadow:var(--shadow)}
+.chipx b{display:block;font-size:18px;color:var(--ink)}
+.msg{background:var(--accent-soft);border-radius:16px;padding:10px 14px;margin-bottom:12px;font-weight:700;font-size:14px}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;transition:width .3s}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:46px;height:46px;font-size:24px;padding:0;border-radius:15px}
+.stepper input{width:72px;text-align:center;padding:8px 4px;font-weight:800;font-size:18px}
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;background:var(--accent-soft);font-size:12px;color:var(--ink)}
+.chip.ok{background:var(--ok);color:#fff}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;background:var(--bg);border:1px solid var(--line)}
+.seg button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.feel{display:flex;gap:6px}
+.feel button{flex:1;font-size:23px;padding:6px 0;background:var(--bg);border:1px solid var(--line)}
+.feel button.on{background:var(--accent-soft);border-color:var(--accent);transform:scale(1.06)}
+.act{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.muted{color:var(--muted);font-size:13px}
+.empty{text-align:center;color:var(--muted);padding:22px 8px}
+.dayrow{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px}
+.dayrow .d{width:84px;flex:none}
+.dayrow .bar{flex:1}
+.dayrow .p{width:44px;flex:none;text-align:left;color:var(--muted)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--bg);border-radius:14px;padding:10px;text-align:center;font-size:13px;color:var(--muted)}
+.stat b{display:block;font-size:22px;color:var(--accent)}
+.tl{border-right:3px solid var(--accent-soft);padding:0 12px 10px 0;margin-right:6px}
+.tl .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-left:6px}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;direction:ltr}
+.heat i{aspect-ratio:1;border-radius:7px;background:var(--line);display:block}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.badge{text-align:center;background:var(--bg);border-radius:14px;padding:10px 4px;font-size:12px;color:var(--muted);filter:grayscale(1);opacity:.55}
+.badge.got{filter:none;opacity:1;color:var(--ink);background:var(--accent-soft)}
+.badge span{display:block;font-size:26px;line-height:1.3}
+.photocard{display:flex;gap:12px;align-items:center}
+.photocard img,.photocard .ph{width:84px;height:112px;border-radius:14px;object-fit:cover;background:var(--accent-soft);flex:none;display:flex;align-items:center;justify-content:center;font-size:30px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.grid button{padding:0;border-radius:12px;overflow:hidden;position:relative;aspect-ratio:3/4;background:var(--accent-soft)}
+.grid img{width:100%;height:100%;object-fit:cover;display:block}
+.grid em{position:absolute;bottom:3px;right:4px;left:4px;font-style:normal;font-size:10px;color:#fff;background:rgba(0,0,0,.45);border-radius:6px;padding:0 4px;text-align:center}
+.cmp{position:relative;direction:ltr;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:#000;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cmp .top{clip-path:inset(0 0 0 50%)}
+.cmp .line{position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.5);pointer-events:none}
+.cmp .knob{position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#fff;color:#0b4a42;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.4);pointer-events:none}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;cursor:ew-resize}
+.cmp .lb{position:absolute;top:8px;font-size:12px;color:#fff;background:rgba(0,0,0,.5);padding:1px 9px;border-radius:10px;pointer-events:none}
+.legend{display:flex;flex-direction:column;gap:7px;font-size:13px}
+.lg{display:flex;align-items:center;gap:8px}
+.lg i{width:12px;height:12px;border-radius:4px;flex:none}
+.wd{display:flex;justify-content:space-between;margin-top:10px}
+.wd div{text-align:center;font-size:11px;color:var(--muted);flex:1}
+.wd i{display:block;width:30px;height:30px;border-radius:50%;background:var(--bg);border:2px solid var(--line);margin:0 auto 3px;line-height:26px;font-style:normal;font-size:15px;font-weight:800}
+.wd i.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.wd i.today{border-color:var(--amber)}
+.msg div+div{margin-top:4px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;z-index:20;padding:14px;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+#modal.show{display:flex}
+#modal .box{width:100%;max-width:520px;color:#fff;text-align:center}
+#modal video,#modal .vimg{width:100%;max-height:68vh;border-radius:16px;background:#000;object-fit:contain}
+#modal .vinfo{margin:10px 0;font-size:14px}
+#modal button{background:rgba(255,255,255,.16);color:#fff}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30;max-width:90%;text-align:center}
+#toast.show{opacity:1}
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:25}
+#confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav class="nav" id="nav"></nav>
+<div id="modal"><div class="box" id="mbox"></div></div>
+<div id="confetti"></div>
+<div id="toast"></div>
+<input id="photoIn" type="file" accept="image/*" style="display:none">
+
+<script>
+(function(){
+'use strict';
+var KEY='rehab-tracker-v2';
+var S=null;
+try{S=JSON.parse(localStorage.getItem(KEY));}catch(e){S=null;}
+if(!S||!S.exercises){S={name:'سید محمد',exercises:[],logs:{},visits:[],photos:{}};}
+if(!S.photos)S.photos={};
+if(!S.plan)S.plan={};
+if(!S.goal)S.goal=5;
+if(!S.name)S.name='سید محمد';
+var memoryOnly=false;
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!memoryOnly){memoryOnly=true;toast('ذخیره‌سازی در این مرورگر فعال نیست');}}
+}
+try{if(navigator.storage&&navigator.storage.persist){navigator.storage.persist();}}catch(e){}
+
+/* ---------- IndexedDB: videos ('v') and photos ('p') ---------- */
+var dbP=null;
+function idb(){
+  if(dbP)return dbP;
+  dbP=new Promise(function(res,rej){
+    var r=indexedDB.open('rehab-media',1);
+    r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('v'))d.createObjectStore('v');if(!d.objectStoreNames.contains('p'))d.createObjectStore('p');};
+    r.onsuccess=function(){res(r.result);};
+    r.onerror=function(){dbP=null;rej(r.error);};
+  });
+  return dbP;
+}
+function iPut(store,key,val){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction(store,'readwrite');t.objectStore(store).put(val,key);t.oncomplete=res;t.onerror=function(){rej(t.error);};});});}
+function iGet(store,key){return idb().then(function(db){return new Promise(function(res,rej){var q=db.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=function(){res(q.result||null);};q.onerror=function(){rej(q.error);};});});}
+function iDel(store,key){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction(store,'readwrite');t.objectStore(store).delete(key);t.oncomplete=res;t.onerror=function(){rej(t.error);};});});}
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function pad(n){return n<10?'0'+n:''+n;}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function fromIso(s){return new Date(s+'T12:00:00');}
+function todayIso(){return iso(new Date());}
+function addDays(s,n){var d=fromIso(s);d.setDate(d.getDate()+n);return iso(d);}
+function num(n){return Number(n||0).toLocaleString('fa-IR');}
+function fmtFull(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(fromIso(s));}catch(e){return s;}}
+function fmtMid(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:'numeric',month:'long',year:'numeric'}).format(fromIso(s));}catch(e){return s;}}
+function fmtShort(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:'numeric',month:'short'}).format(fromIso(s));}catch(e){return s;}}
+function fmtDay(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'short',day:'numeric',month:'numeric'}).format(fromIso(s));}catch(e){return s;}}
+function daysBetween(a,b){return Math.round((fromIso(b)-fromIso(a))/86400000);}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show');},2400);}
+function getLog(d,create){var l=S.logs[d];if(!l&&create){l=S.logs[d]={ex:{},pool:null,feel:null,acts:[]};}return l||null;}
+function exOn(d){return S.exercises.filter(function(e){return e.addedAt<=d&&(!e.archivedAt||e.archivedAt>d);});}
+function dayPct(d){
+  var list=exOn(d);if(!list.length)return null;
+  var l=getLog(d,false),sum=0;
+  list.forEach(function(e){var done=l&&l.ex[e.id]?l.ex[e.id]:0;sum+=Math.min(done,e.target||1)/(e.target||1);});
+  return sum/list.length;
+}
+function isActive(d){var l=getLog(d,false);if(!l)return false;for(var k in l.ex){if(l.ex[k]>0)return true;}return false;}
+function curStreak(){
+  var d=todayIso(),n=0;
+  if(!isActive(d))d=addDays(d,-1);
+  while(isActive(d)&&n<2000){n++;d=addDays(d,-1);}
+  return n;
+}
+function bestStreak(){
+  var ks=Object.keys(S.logs).filter(isActive).sort();if(!ks.length)return 0;
+  var best=1,cur=1;
+  for(var i=1;i<ks.length;i++){if(daysBetween(ks[i-1],ks[i])===1){cur++;}else cur=1;if(cur>best)best=cur;}
+  return best;
+}
+function photoDates(){return Object.keys(S.photos).sort();}
+function weekPool(){var n=0;for(var i=0;i<7;i++){var l=getLog(addDays(todayIso(),-i),false);if(l&&l.pool===true)n++;}return n;}
+var UNITS={rep:'تکرار',set:'ست',min:'دقیقه',sec:'ثانیه'};
+
+/* ---------- state ---------- */
+var tab='today',viewDate=todayIso(),editing=null,pendingFile=null,removeVideo=false,rangeDays=7;
+var cmpA=null,cmpB=null,viewer=null,slideT=null,photoTarget=null;
+var urlCache={};
+var TABS=[['today','📋','امروز'],['plan','🗓️','برنامه'],['ex','💪','حرکت‌ها'],['prog','📸','پیشرفت'],['doc','🩺','دکتر'],['rep','📊','گزارش']];
+
+function renderNav(){
+  document.getElementById('nav').innerHTML=TABS.map(function(t){
+    return '<button data-a="tab" data-id="'+t[0]+'" class="'+(tab===t[0]?'on':'')+'"><span>'+t[1]+'</span>'+t[2]+'</button>';
+  }).join('');
+}
+
+/* ---------- photos ---------- */
+function readImg(file){return new Promise(function(res,rej){
+  var u=URL.createObjectURL(file),im=new Image();
+  im.onload=function(){URL.revokeObjectURL(u);res(im);};
+  im.onerror=function(){URL.revokeObjectURL(u);rej(new Error('img'));};
+  im.src=u;});}
+function scaleTo(im,max,q){
+  var w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,max/Math.max(w,h));
+  var c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*s));c.height=Math.max(1,Math.round(h*s));
+  c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  return new Promise(function(res,rej){c.toBlob(function(b){b?res(b):rej(new Error('blob'));},'image/jpeg',q);});
+}
+function dropUrls(d){var u=urlCache[d];if(u){try{URL.revokeObjectURL(u.full);URL.revokeObjectURL(u.thumb);}catch(e){}delete urlCache[d];}}
+function photoUrls(d){
+  if(urlCache[d])return Promise.resolve(urlCache[d]);
+  return iGet('p',d).then(function(rec){
+    if(!rec)return null;
+    var u={full:URL.createObjectURL(rec.full),thumb:URL.createObjectURL(rec.thumb)};
+    urlCache[d]=u;return u;
+  }).catch(function(){return null;});
+}
+function hydrate(){
+  var imgs=document.querySelectorAll('img[data-pt],img[data-pf]');
+  Array.prototype.forEach.call(imgs,function(im){
+    var full=im.hasAttribute('data-pf'),d=im.getAttribute(full?'data-pf':'data-pt');
+    photoUrls(d).then(function(u){if(u)im.src=full?u.full:u.thumb;});
+  });
+}
+function handlePhoto(file){
+  var d=photoTarget||todayIso();
+  toast('در حال ذخیره عکس…');
+  readImg(file).then(function(im){
+    return Promise.all([scaleTo(im,1280,0.8),scaleTo(im,300,0.7)]);
+  }).then(function(r){
+    return iPut('p',d,{full:r[0],thumb:r[1]});
+  }).then(function(){
+    dropUrls(d);S.photos[d]=true;save();render();toast('عکس ذخیره شد 📸');
+  }).catch(function(){toast('ذخیره عکس ممکن نشد');});
+}
+
+/* ---------- views ---------- */
+function greet(){var h=new Date().getHours();return h<5?'شب بخیر':h<12?'صبح بخیر':h<17?'ظهر بخیر':h<20?'عصر بخیر':'شب بخیر';}
+function motivate(p,n){
+  if(n===0)return 'اول از «حرکت‌ها» تمرین‌هایی که دکتر داده را اضافه کن 💪';
+  if(p>=0.999)return 'عالیه! تمرین‌های امروز کامل شد 🎉';
+  if(p>=0.5)return 'بیشتر راه رفته، کم مونده! 🔥';
+  if(p>0)return 'شروع خوبی بود، ادامه بده 👏';
+  return 'هر روز یه قدم؛ امروز هم شروع کنیم 💪';
+}
+function viewToday(){
+  var d=viewDate,isToday=d===todayIso();
+  var l=getLog(d,false)||{ex:{},pool:null,feel:null,acts:[]};
+  var list=exOn(d),pct=dayPct(d),p100=pct==null?0:Math.round(pct*100);
+  var C=2*Math.PI*48;
+  var h='<div class="datebar"><button data-a="prev" class="ghost">›</button><div class="t">'+(isToday?'امروز':esc(fmtFull(d)))+(isToday?'':'<div><button data-a="goToday" class="small">برگرد به امروز</button></div>')+'</div><button data-a="next" class="ghost">‹</button></div>';
+  h+='<div class="hero"><div style="z-index:1"><div class="sm">'+greet()+'</div><div class="nm">'+esc(S.name)+' 👋</div><div class="dt">'+esc(fmtFull(d))+'</div></div>'+
+     '<div class="ring"><svg width="112" height="112" viewBox="0 0 112 112"><circle cx="56" cy="56" r="48" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="10"/><circle cx="56" cy="56" r="48" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-p100/100)).toFixed(1)+'" style="transition:stroke-dashoffset .5s"/></svg><div class="c">'+(pct==null?'—':num(p100)+'٪')+'<small>پیشرفت روز</small></div></div></div>';
+  h+='<div class="chips"><div class="chipx"><b>🔥 '+num(curStreak())+'</b>روز پشت‌سرهم</div><div class="chipx"><b>📸 '+num(photoDates().length)+'</b>عکس پیشرفت</div><div class="chipx"><b>🏊 '+num(weekPool())+'</b>استخر این هفته</div></div>';
+  h+=levelCard(false);
+  h+='<div class="msg">'+motivate(pct||0,list.length)+'</div>';
+  var wd=fromIso(d).getDay(),pitems=S.plan[wd]||[],pdone=l.planDone||{};
+  if(pitems.length){
+    var pc=pitems.filter(function(it){return pdone[it.id];}).length;
+    h+='<div class="card"><div class="row between"><h2 style="margin:0">برنامه '+(isToday?'امروز':'این روز')+'</h2><span class="chip'+(pc===pitems.length?' ok':'')+'">'+num(pc)+' از '+num(pitems.length)+'</span></div><div style="margin-top:6px">'+
+      pitems.map(function(it){var on=!!pdone[it.id];return '<button data-a="planDone" data-id="'+it.id+'" class="ghost" style="width:100%;display:flex;align-items:center;gap:10px;text-align:right;margin-top:8px;'+(on?'background:var(--accent-soft);':'')+'"><span style="font-size:20px">'+(on?'✅':'⬜')+'</span><span class="grow" style="'+(on?'text-decoration:line-through;opacity:.7':'')+'">'+esc(it.text)+'</span></button>';}).join('')+'</div></div>';
+  }
+  // photo card
+  var has=!!S.photos[d];
+  h+='<div class="card"><h2>عکس '+(isToday?'امروز':'این روز')+'</h2><div class="photocard">'+(has?'<img data-pt="'+d+'" alt="">':'<div class="ph">📷</div>')+'<div class="grow"><div class="muted" style="margin-bottom:8px">'+(has?'عکس ثبت شده. اگر خواستی عوضش کن.':'از دستت هر روز با همان زاویه و نور عکس بگیر تا پیشرفتت را ببینی.')+'</div><button class="primary" data-a="takePhoto" data-id="'+d+'">'+(has?'تعویض عکس':'📸 ثبت عکس')+'</button>'+(has?' <button class="ghost" data-a="viewPhoto" data-id="'+d+'">دیدن</button>':'')+'</div></div></div>';
+  if(!list.length){
+    h+='<div class="card empty">هنوز حرکتی تعریف نشده.<div style="margin-top:10px"><button class="primary" data-a="tab" data-id="ex">رفتن به حرکت‌ها</button></div></div>';
+  }
+  list.forEach(function(e){
+    var done=l.ex[e.id]||0,t=e.target||1,full=done>=t;
+    h+='<div class="card"><div class="row between"><div class="grow"><b>'+esc(e.name)+'</b>'+(full?' <span class="chip ok">کامل ✓</span>':'')+'<div class="muted">هدف روزانه: '+num(t)+' '+UNITS[e.unit||'rep']+'</div></div>'+(e.hasVideo?'<button class="small" data-a="play" data-id="'+e.id+'">▶ فیلم</button>':'')+'</div>';
+    if(e.desc)h+='<div class="muted" style="margin-top:4px">'+esc(e.desc)+'</div>';
+    h+='<div class="bar" style="margin-top:10px"><i style="width:'+Math.min(100,Math.round(done/t*100))+'%"></i></div>';
+    h+='<div class="row between" style="margin-top:10px"><div class="stepper"><button data-a="dec" data-id="'+e.id+'">−</button><input type="number" inputmode="numeric" min="0" value="'+done+'" data-in="amt" data-id="'+e.id+'"><button data-a="inc" data-id="'+e.id+'">+</button></div><button class="'+(full?'ghost':'primary')+'" data-a="full" data-id="'+e.id+'">'+(full?'صفر کن':'همه‌اش را رفتم')+'</button></div></div>';
+  });
+  h+='<div class="card"><h2>استخر</h2><div class="seg"><button data-a="pool" data-id="yes" class="'+(l.pool===true?'on':'')+'">🏊 رفتم</button><button data-a="pool" data-id="no" class="'+(l.pool===false?'on':'')+'">نرفتم</button></div></div>';
+  h+='<div class="card"><h2>حال خودت چطوره؟</h2><div class="feel">'+[['😣',1],['😕',2],['😐',3],['🙂',4],['😄',5]].map(function(f){return '<button data-a="feel" data-id="'+f[1]+'" class="'+(l.feel===f[1]?'on':'')+'">'+f[0]+'</button>';}).join('')+'</div></div>';
+  h+='<div class="card"><h2>کارهای امروز</h2><div class="row"><input id="actIn" placeholder="مثلاً: ۲۰ دقیقه ورزش" maxlength="200"><button class="primary" data-a="addAct">افزودن</button></div><div style="margin-top:8px">';
+  if(!l.acts.length)h+='<div class="muted" style="padding:8px 0">چیزی ثبت نشده.</div>';
+  l.acts.forEach(function(a,i){h+='<div class="act"><div class="grow">'+esc(a.text)+'</div><button class="small danger" data-a="delAct" data-id="'+i+'">حذف</button></div>';});
+  h+='</div></div>';
+  return h;
+}
+
+function viewPlan(){
+  var order=[6,0,1,2,3,4,5],names={6:'شنبه',0:'یکشنبه',1:'دوشنبه',2:'سه‌شنبه',3:'چهارشنبه',4:'پنجشنبه',5:'جمعه'};
+  var td=new Date().getDay();
+  var h='<h1>برنامه هفتگی</h1><p class="sub">برای هر روز هفته بنویس چه کارهایی داری؛ همان روز در صفحه «امروز» با تیک نشان داده می‌شود.</p>';
+  order.forEach(function(wd){
+    var items=S.plan[wd]||[];
+    h+='<div class="card" style="'+(wd===td?'border-color:var(--accent);':'')+'"><div class="row between"><h2 style="margin:0">'+names[wd]+'</h2>'+(wd===td?'<span class="chip ok">امروز</span>':'')+'</div>';
+    if(!items.length)h+='<div class="muted" style="padding:6px 0">برنامه‌ای ثبت نشده.</div>';
+    items.forEach(function(it){h+='<div class="act"><div class="grow">'+esc(it.text)+'</div><button class="small danger" data-a="delPlan" data-id="'+wd+'|'+it.id+'">حذف</button></div>';});
+    h+='<div class="row" style="margin-top:8px"><input id="pIn'+wd+'" placeholder="مثلاً: ۲۰ دقیقه ورزش" maxlength="120"><button class="primary" data-a="addPlan" data-id="'+wd+'">افزودن</button></div></div>';
+  });
+  return h;
+}
+
+function viewEx(){
+  var h='<h1>حرکت‌های من</h1><p class="sub">حرکت‌هایی که دکتر داده؛ با فیلم و هدف روزانه.</p>';
+  if(editing){
+    var e=editing==='new'?{name:'',desc:'',target:10,unit:'rep',hasVideo:false}:(findEx(editing)||{});
+    h+='<div class="card"><h2>'+(editing==='new'?'حرکت جدید':'ویرایش حرکت')+'</h2>'+
+      '<label>اسم حرکت</label><input id="fName" value="'+esc(e.name)+'" maxlength="80">'+
+      '<label>توضیح (اختیاری)</label><textarea id="fDesc" rows="2" maxlength="400">'+esc(e.desc||'')+'</textarea>'+
+      '<div class="row"><div class="grow"><label>هدف روزانه</label><input id="fTarget" type="number" inputmode="numeric" min="1" value="'+esc(e.target||10)+'"></div>'+
+      '<div class="grow"><label>واحد</label><select id="fUnit">'+Object.keys(UNITS).map(function(k){return '<option value="'+k+'"'+((e.unit||'rep')===k?' selected':'')+'>'+UNITS[k]+'</option>';}).join('')+'</select></div></div>'+
+      '<label>فیلم حرکت</label><input id="fFile" type="file" accept="video/*" data-in="file">'+
+      (e.hasVideo?'<div class="muted" style="margin-top:6px">یک فیلم ذخیره شده. '+(removeVideo?'<b>با ذخیره حذف می‌شود.</b>':'<button class="small danger" data-a="rmVideo">حذف فیلم</button>')+'</div>':'')+
+      '<div class="row" style="margin-top:14px"><button class="primary grow" data-a="saveEx">ذخیره</button><button class="ghost" data-a="cancelEx">انصراف</button></div></div>';
+  }else{
+    h+='<button class="primary" style="width:100%;margin-bottom:12px" data-a="newEx">＋ حرکت جدید</button>';
+  }
+  var act=S.exercises.filter(function(x){return !x.archivedAt;}),old=S.exercises.filter(function(x){return x.archivedAt;});
+  if(!act.length&&!editing)h+='<div class="card empty">هنوز حرکتی نداری.</div>';
+  act.forEach(function(e){
+    h+='<div class="card"><b>'+esc(e.name)+'</b><div class="muted">'+num(e.target)+' '+UNITS[e.unit||'rep']+' در روز · اضافه‌شده '+esc(fmtShort(e.addedAt))+'</div>'+
+      (e.desc?'<div class="muted" style="margin-top:4px">'+esc(e.desc)+'</div>':'')+
+      '<div class="row wrap" style="margin-top:10px">'+(e.hasVideo?'<button class="small" data-a="play" data-id="'+e.id+'">▶ فیلم</button>':'')+'<button class="small" data-a="editEx" data-id="'+e.id+'">ویرایش</button><button class="small danger" data-a="archEx" data-id="'+e.id+'">کنار گذاشتن</button></div></div>';
+  });
+  if(old.length){
+    h+='<h2 style="margin-top:18px">حرکت‌های قبلی</h2>';
+    old.forEach(function(e){h+='<div class="card"><div class="row between"><div class="grow"><b>'+esc(e.name)+'</b><div class="muted">کنار گذاشته شد: '+esc(fmtShort(e.archivedAt))+'</div></div><button class="small" data-a="restoreEx" data-id="'+e.id+'">برگردان</button></div></div>';});
+  }
+  return h;
+}
+
+function viewProg(){
+  var ds=photoDates(),h='<h1>پیشرفت من</h1><p class="sub">عکس‌های روزانه، کنار هم.</p>';
+  if(!ds.length){
+    return h+'<div class="card empty"><div style="font-size:42px">📸</div>هنوز عکسی ثبت نشده.<div class="muted" style="margin:6px 0 12px">هر روز با همان زاویه و نور از دستت عکس بگیر؛ بعد از چند هفته می‌توانی فرقش را ببینی.</div><button class="primary" data-a="takePhoto" data-id="'+todayIso()+'">📸 عکس امروز</button></div>';
+  }
+  if(!cmpA||!S.photos[cmpA])cmpA=ds[0];
+  if(!cmpB||!S.photos[cmpB])cmpB=ds[ds.length-1];
+  var span=daysBetween(ds[0],ds[ds.length-1]);
+  h+='<div class="stats" style="margin-bottom:12px"><div class="stat"><b>'+num(ds.length)+'</b>عکس</div><div class="stat"><b>'+num(span)+'</b>روز از اولین عکس</div></div>';
+  if(ds.length>=2){
+    var opts=function(sel){return ds.map(function(d){return '<option value="'+d+'"'+(d===sel?' selected':'')+'>'+esc(fmtMid(d))+'</option>';}).join('');};
+    h+='<div class="card"><h2>قبل و بعد</h2><div class="cmp" id="cmp"><img data-pf="'+cmpB+'" alt=""><img class="top" id="cmpTop" data-pf="'+cmpA+'" alt=""><div class="line" id="cmpLine"></div><div class="knob" id="cmpKnob">⇆</div><span class="lb" style="right:8px">قبل</span><span class="lb" style="left:8px">بعد</span><input type="range" id="cmpRange" min="0" max="100" value="50" aria-label="مقایسه"></div>'+
+      '<div class="row" style="margin-top:10px"><div class="grow"><label style="margin-top:0">قبل</label><select data-in="cmpA">'+opts(cmpA)+'</select></div><div class="grow"><label style="margin-top:0">بعد</label><select data-in="cmpB">'+opts(cmpB)+'</select></div></div></div>';
+    h+='<button class="primary" style="width:100%;margin-bottom:12px" data-a="slideshow">▶ پخش پیشرفت (از اول تا امروز)</button>';
+  }
+  h+='<div class="card"><div class="row between"><h2 style="margin:0">همه عکس‌ها</h2><button class="small" data-a="takePhoto" data-id="'+todayIso()+'">＋ عکس امروز</button></div><div class="grid" style="margin-top:10px">';
+  ds.slice().reverse().forEach(function(d){h+='<button data-a="viewPhoto" data-id="'+d+'"><img data-pt="'+d+'" alt=""><em>'+esc(fmtShort(d))+'</em></button>';});
+  h+='</div><p class="muted" style="margin-bottom:0">برای ذخیره در گالری گوشی: عکس را باز کن، انگشتت را روی آن نگه دار و Save Image را بزن.</p></div>';
+  return h;
+}
+
+function viewDoc(){
+  var vs=S.visits.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+  var h='<h1>پیش دکتر</h1>';
+  var past=vs.filter(function(v){return v.date<=todayIso();})[0];
+  if(past){var n=daysBetween(past.date,todayIso());h+='<p class="sub">آخرین ویزیت: '+(n===0?'امروز':num(n)+' روز پیش')+'</p>';}
+  else h+='<p class="sub">ویزیت‌ها و تغییر برنامه حرکتی را اینجا ثبت کن.</p>';
+  h+='<div class="card"><h2>ثبت ویزیت</h2><label>تاریخ</label><input id="vDate" type="date" value="'+todayIso()+'">'+
+    '<label>یادداشت (اختیاری)</label><textarea id="vNote" rows="2" maxlength="400" placeholder="دکتر چی گفت؟"></textarea>'+
+    '<label style="display:flex;align-items:center;gap:8px;color:var(--ink);font-size:15px;margin-top:12px"><input id="vNew" type="checkbox" style="width:22px;height:22px">حرکت‌های جدید گرفتم</label>'+
+    '<button class="primary" style="width:100%;margin-top:12px" data-a="addVisit">ثبت</button></div>';
+  vs.forEach(function(v){
+    h+='<div class="card"><div class="row between"><b>'+esc(fmtFull(v.date))+'</b><button class="small danger" data-a="delVisit" data-id="'+v.id+'">حذف</button></div>'+(v.newProgram?'<div style="margin-top:4px"><span class="chip">🆕 برنامه حرکتی جدید</span></div>':'')+(v.note?'<div class="muted" style="margin-top:6px">'+esc(v.note)+'</div>':'')+'</div>';
+  });
+  h+='<div class="card"><h2>تنظیمات و پشتیبان</h2><label style="margin-top:0">اسم</label><input id="sName" value="'+esc(S.name)+'" maxlength="40" data-in="name">'+
+    '<label>هدف تمرین در هفته</label><select data-in="goal">'+[3,4,5,6,7].map(function(g){return '<option value="'+g+'"'+((S.goal||5)===g?' selected':'')+'>'+num(g)+' روز</option>';}).join('')+'</select>'+
+    '<p class="muted">اطلاعات روی همین گوشی ذخیره می‌شود. گاهی نسخه پشتیبان بگیر (عکس‌ها و فیلم‌ها در پشتیبان نیستند).</p><div class="row"><button data-a="export">گرفتن پشتیبان</button><button data-a="importPick" class="ghost">بازیابی</button></div><input id="impFile" type="file" accept="application/json,.json" style="display:none" data-in="import"></div>';
+  return h;
+}
+
+/* ---------- charts & gamification helpers ---------- */
+var WD_SHORT={6:'ش',0:'ی',1:'د',2:'س',3:'چ',4:'پ',5:'ج'};
+var WD_NAME={6:'شنبه',0:'یکشنبه',1:'دوشنبه',2:'سه‌شنبه',3:'چهارشنبه',4:'پنجشنبه',5:'جمعه'};
+var LEVELS=['تازه‌کار','مصمم','پیگیر','پرانرژی','قدرتمند','پولادین','قهرمان','اسطوره'];
+var PALETTE=['#0f9d8a','#1b6ca8','#ffb020','#ef5da8','#7bd88f','#9b7bff','#ff7a59','#5ec4ff'];
+function lastDays(n,off){var a=[],end=addDays(todayIso(),-(off||0));for(var i=n-1;i>=0;i--)a.push(addDays(end,-i));return a;}
+function avgPct(days){var t=0,c=0;days.forEach(function(d){var p=dayPct(d);if(p!=null){t+=p;c++;}});return c?t/c:null;}
+function weekStart(d){var g=fromIso(d).getDay();return addDays(d,-((g+1)%7));}
+function jDay(d){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:'numeric'}).format(fromIso(d));}catch(e){return d.slice(8);}}
+function pctTxt(v){return num(Math.round(v*100))+'٪';}
+
+function donut(segs,big,small,size){
+  var r=50,C=2*Math.PI*r,tot=0,nz=0;
+  segs.forEach(function(g){if(g.v>0){tot+=g.v;nz++;}});
+  var s='<svg viewBox="0 0 120 120" width="'+(size||132)+'" height="'+(size||132)+'" style="direction:ltr;flex:none"><g transform="rotate(-90 60 60)"><circle cx="60" cy="60" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="14"/>';
+  var off=0;
+  if(tot>0){segs.forEach(function(g){
+    if(g.v<=0)return;
+    var len=g.v/tot*C,vis=nz>1?Math.max(len-2,0.5):C;
+    s+='<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="'+g.c+'" stroke-width="14" stroke-linecap="butt" stroke-dasharray="'+vis.toFixed(2)+' '+(C-vis).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'"/>';
+    off+=len;
+  });}
+  s+='</g><text x="60" y="'+(small?60:67)+'" text-anchor="middle" font-size="22" font-weight="800" fill="var(--ink)">'+big+'</text>';
+  if(small)s+='<text x="60" y="78" text-anchor="middle" font-size="10" fill="var(--muted)">'+small+'</text>';
+  return s+'</svg>';
+}
+function legend(items){
+  return '<div class="legend">'+items.map(function(it){return '<div class="lg"><i style="background:'+it.c+'"></i><span class="grow">'+esc(it.l)+'</span><b>'+it.t+'</b></div>';}).join('')+'</div>';
+}
+function barChart(bars,o){
+  o=o||{};
+  var W=340,H=o.h||170,pl=30,pr=6,pt=20,pb=24,pw=W-pl-pr,ph=H-pt-pb,n=bars.length,slot=pw/n,bw=Math.min(28,slot*0.64),max=o.max||1;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="direction:ltr;display:block">';
+  [0,0.5,1].forEach(function(g){
+    var y=pt+ph-ph*g;
+    s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)" stroke-dasharray="3 4"/><text x="'+(pl-5)+'" y="'+(y+4)+'" text-anchor="end" font-size="10" fill="var(--muted)">'+(o.yfmt?o.yfmt(g*max):num(Math.round(g*100))+'٪')+'</text>';
+  });
+  bars.forEach(function(b,i){
+    var v=Math.max(0,Math.min(1,b.v/max)),h=Math.max(v>0?4:2,ph*v),x=pl+slot*i+(slot-bw)/2,y=pt+ph-h;
+    var col=b.c||(b.v>=max*0.999?'var(--ok)':b.v>0?'var(--accent)':'var(--line)');
+    s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="'+Math.min(7,bw/2).toFixed(1)+'" fill="'+col+'"/>';
+    if(o.vals&&b.t!=null&&n<=14&&b.v>0)s+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">'+b.t+'</text>';
+    if(b.l!=null&&(!o.every||(n-1-i)%o.every===0))s+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="'+(o.lf||10)+'" fill="var(--muted)">'+b.l+'</text>';
+  });
+  return s+'</svg>';
+}
+function feelChart(days){
+  var W=340,H=160,pl=26,pr=8,pt=12,pb=22,pw=W-pl-pr,ph=H-pt-pb,n=days.length,slot=pw/n;
+  var E=['😣','😕','😐','🙂','😄'],pts=[];
+  days.forEach(function(d,i){var l=getLog(d,false);if(l&&l.feel)pts.push({i:i,v:l.feel});});
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="direction:ltr;display:block">';
+  for(var v=1;v<=5;v++){var y=pt+ph-(v-1)/4*ph;s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)" stroke-dasharray="3 4"/><text x="'+(pl-6)+'" y="'+(y+5)+'" text-anchor="end" font-size="13">'+E[v-1]+'</text>';}
+  var every=n<=7?1:5;
+  days.forEach(function(d,i){if((n-1-i)%every===0)s+='<text x="'+(pl+slot*(i+0.5)).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="10" fill="var(--muted)">'+(n<=7?WD_SHORT[fromIso(d).getDay()]:jDay(d))+'</text>';});
+  var xy=pts.map(function(p){return [pl+slot*(p.i+0.5),pt+ph-(p.v-1)/4*ph];});
+  if(xy.length>1)s+='<polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="'+xy.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ')+'"/>';
+  xy.forEach(function(q){s+='<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="4.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"/>';});
+  return {svg:s+'</svg>',count:pts.length,avg:pts.length?pts.reduce(function(a,p){return a+p.v;},0)/pts.length:0};
+}
+function hbar(label,val,txt,col){
+  return '<div style="margin:10px 0"><div class="row between" style="font-size:14px"><span>'+esc(label)+'</span><b>'+txt+'</b></div><div class="bar" style="margin-top:4px"><i style="width:'+Math.round(Math.max(0,Math.min(1,val))*100)+'%;'+(col?'background:'+col:'')+'"></i></div></div>';
+}
+function totalXp(){
+  var xp=0,k;
+  for(k in S.logs){
+    var l=S.logs[k],p=dayPct(k);
+    if(p!=null)xp+=Math.round(p*60)+(p>=0.999?25:0);
+    if(l.pool===true)xp+=20;
+    if(l.planDone){(S.plan[fromIso(k).getDay()]||[]).forEach(function(it){if(l.planDone[it.id])xp+=5;});}
+  }
+  return xp+Object.keys(S.photos).length*15;
+}
+function weekInfo(){
+  var ws=weekStart(todayIso()),t=todayIso(),dots=[],cnt=0;
+  for(var i=0;i<7;i++){
+    var d=addDays(ws,i),on=isActive(d);if(on)cnt++;
+    dots.push({d:d,on:on,today:d===t,fut:d>t,wd:fromIso(d).getDay()});
+  }
+  return {dots:dots,count:cnt};
+}
+function levelCard(full){
+  var xp=totalXp(),lvl=Math.floor(Math.sqrt(xp/100))+1,lo=(lvl-1)*(lvl-1)*100,hi=lvl*lvl*100;
+  var pr=Math.round((xp-lo)/(hi-lo)*100),nm=LEVELS[Math.min(lvl-1,LEVELS.length-1)];
+  var goal=S.goal||5,wk=weekInfo(),left=goal-wk.count;
+  var h='<div class="card"><div class="row between"><b>⭐ سطح '+num(lvl)+' · '+nm+'</b><span class="muted">'+num(xp)+' امتیاز</span></div><div class="bar" style="margin-top:8px"><i style="width:'+pr+'%"></i></div>'+
+    '<div class="muted" style="margin-top:6px">'+num(hi-xp)+' امتیاز دیگر تا سطح '+num(lvl+1)+(full?' — امتیاز با هر تمرین، استخر، برنامه و عکس روزانه بیشتر می‌شود':'')+'</div>'+
+    '<div class="row between" style="margin-top:14px"><b>🎯 هدف این هفته</b><span class="chip'+(wk.count>=goal?' ok':'')+'">'+num(wk.count)+' از '+num(goal)+' روز</span></div>'+
+    '<div class="wd">'+wk.dots.map(function(x){return '<div><i class="'+(x.on?'on ':'')+(x.today?'today':'')+'">'+(x.on?'✓':'')+'</i>'+WD_SHORT[x.wd]+'</div>';}).join('')+'</div>'+
+    '<div class="muted" style="margin-top:8px">'+(wk.count>=goal?'هدف این هفته را زدی! 🏆 آفرین':left===1?'فقط یک روز دیگر تا هدف هفته 🔥':'هنوز '+num(Math.max(left,0))+' روز تا هدف هفته مانده؛ می‌توانی!')+'</div></div>';
+  return h;
+}
+function badgeList(){
+  var bs=bestStreak(),np=photoDates().length,fullTot=0,logged=Object.keys(S.logs).filter(function(k){return isActive(k);}).length;
+  Object.keys(S.logs).forEach(function(k){var p=dayPct(k);if(p!=null&&p>=0.999)fullTot++;});
+  var lvl=Math.floor(Math.sqrt(totalXp()/100))+1;
+  return [['🔥','۳ روز پشت‌سرهم',bs,3],['⚡','۷ روز پشت‌سرهم',bs,7],['🏆','۳۰ روز پشت‌سرهم',bs,30],
+    ['📸','۷ عکس',np,7],['🖼️','۳۰ عکس',np,30],['🏊','۱۰ بار استخر',countPool(),10],
+    ['💯','۱۰ روز کامل',fullTot,10],['📅','۱۴ روز تمرین',logged,14],['⭐','سطح ۵',lvl,5]];
+}
+
+function viewRep(){
+  var n=rangeDays,days=lastDays(n),prev=lastDays(n,n);
+  var avg=avgPct(days),avgP=avgPct(prev),full=0,part=0,none=0,withEx=0,activeN=0,poolN=0,photoN=0;
+  days.forEach(function(d){
+    var p=dayPct(d);
+    if(p!=null){withEx++;if(p>=0.999)full++;else if(p>0)part++;else none++;}
+    if(isActive(d))activeN++;
+    var l=getLog(d,false);if(l&&l.pool===true)poolN++;
+    if(S.photos[d])photoN++;
+  });
+  var bs=bestStreak(),cs=curStreak();
+  var h='<h1>گزارش</h1><div class="seg" style="margin:8px 0 12px"><button data-a="range" data-id="7" class="'+(n===7?'on':'')+'">۷ روز</button><button data-a="range" data-id="30" class="'+(n===30?'on':'')+'">۳۰ روز</button><button data-a="range" data-id="84" class="'+(n===84?'on':'')+'">۱۲ هفته</button></div>';
+
+  // weekday pattern (last 56 days)
+  var wdSum={},wdCnt={},d56=lastDays(56);
+  d56.forEach(function(d){var p=dayPct(d);if(p==null)return;var w=fromIso(d).getDay();wdSum[w]=(wdSum[w]||0)+p;wdCnt[w]=(wdCnt[w]||0)+1;});
+  var order=[6,0,1,2,3,4,5],bestW=null,bestV=0;
+  order.forEach(function(w){if(wdCnt[w]){var v=wdSum[w]/wdCnt[w];if(v>bestV){bestV=v;bestW=w;}}});
+
+  // insights
+  var ins=[];
+  if(cs>=2)ins.push('🔥 '+num(cs)+' روز پشت‌سرهم تمرین کرده‌ای'+(bs>cs?'؛ رکوردت '+num(bs)+' روز است':'؛ این رکوردِ توست!'));
+  else ins.push('💪 هر روز با یک حرکت کوچک شروع می‌شود؛ همین امروز یک قدم بردار');
+  if(avg!=null&&avgP!=null){var df=Math.round((avg-avgP)*100);if(df>=3)ins.push('📈 نسبت به دوره قبل '+num(df)+'٪ بهتر شده‌ای');else if(df<=-3)ins.push('🌱 کمی افت داشته‌ای؛ با یک تمرین سبک برگرد، مهم استمرار است');}
+  if(bestW!=null&&bestV>0)ins.push('⭐ قوی‌ترین روز هفته‌ات '+WD_NAME[bestW]+' است');
+  h+='<div class="msg">'+ins.map(function(t){return '<div>'+t+'</div>';}).join('')+'</div>';
+
+  h+=levelCard(true);
+
+  // donut summary
+  if(withEx===0){
+    h+='<div class="card empty">هنوز حرکتی تعریف نشده؛ بعد از اضافه کردن حرکت‌ها، گزارش‌ها اینجا ظاهر می‌شوند.</div>';
+  }else{
+    var tr='';
+    if(avg!=null&&avgP!=null){var dd=Math.round((avg-avgP)*100);tr='<div class="chip'+(dd>=0?' ok':'')+'" style="margin-top:6px">'+(dd>=0?'▲ ':'▼ ')+num(Math.abs(dd))+'٪ نسبت به دوره قبل</div>';}
+    h+='<div class="card"><h2>خلاصه '+(n===7?'۷ روز':n===30?'۳۰ روز':'۱۲ هفته')+' اخیر</h2><div class="row" style="gap:14px">'+donut([{v:full,c:'var(--ok)'},{v:part,c:'var(--amber)'},{v:none,c:'#c4d3cf'}],avg==null?'—':pctTxt(avg),'میانگین انجام',128)+
+      '<div class="grow">'+legend([{c:'var(--ok)',l:'روز کامل',t:num(full)},{c:'var(--amber)',l:'نیمه‌کاره',t:num(part)},{c:'#c4d3cf',l:'بدون تمرین',t:num(none)}])+tr+'</div></div></div>';
+
+    // stats
+    h+='<div class="card"><div class="stats"><div class="stat"><b>'+num(activeN)+'</b>روز تمرین</div><div class="stat"><b>'+num(poolN)+'</b>بار استخر</div><div class="stat"><b>'+num(photoN)+'</b>عکس ثبت‌شده</div><div class="stat"><b>'+num(bs)+'</b>رکورد پشت‌سرهم</div></div></div>';
+
+    // bar chart per day / week
+    var bars=[],title,opt;
+    if(n<=30){
+      days.forEach(function(d){var p=dayPct(d),w=fromIso(d).getDay();bars.push({v:p==null?0:p,t:p==null?null:num(Math.round(p*100)),l:n===7?WD_SHORT[w]:jDay(d)});});
+      title=n===7?'تمرین هر روز':'تمرین روز به روز';opt={every:n===7?1:5,vals:n===7};
+    }else{
+      for(var i=0;i<n;i+=7){var ch=days.slice(i,i+7),a=avgPct(ch);bars.push({v:a==null?0:a,t:a==null?null:num(Math.round(a*100)),l:fmtShort(ch[0])});}
+      title='تمرین هفته به هفته';opt={every:2,lf:9,vals:true};
+    }
+    h+='<div class="card"><h2>'+title+'</h2>'+barChart(bars,opt)+'<div class="muted">میله سبز یعنی روز کاملِ تمرین ✓</div></div>';
+
+    // exercises: donut share + adherence bars
+    var exs=[],totShare=0;
+    S.exercises.forEach(function(e){
+      var tot=0,dn=0;
+      days.forEach(function(d){if(exOn(d).indexOf(e)<0)return;dn++;var l=getLog(d,false),v=l&&l.ex[e.id]?l.ex[e.id]:0;tot+=Math.min(v,e.target||1)/(e.target||1);});
+      if(dn>0){exs.push({e:e,share:tot,rate:tot/dn,dn:dn});totShare+=tot;}
+    });
+    if(exs.length){
+      exs.forEach(function(x,i){x.c=PALETTE[i%PALETTE.length];});
+      h+='<div class="card"><h2>سهم هر حرکت</h2>';
+      if(totShare>0)h+='<div class="row" style="gap:12px">'+donut(exs.map(function(x){return {v:x.share,c:x.c};}),num(exs.length),'حرکت',120)+'<div class="grow">'+legend(exs.map(function(x){return {c:x.c,l:x.e.name,t:pctTxt(x.share/totShare)};}))+'</div></div>';
+      h+='<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:4px"><div class="muted" style="margin-top:6px">میزان انجام هر حرکت نسبت به هدف روزانه:</div>'+
+        exs.slice().sort(function(a,b){return b.rate-a.rate;}).map(function(x){return hbar(x.e.name+(x.e.archivedAt?' (قبلی)':''),x.rate,pctTxt(x.rate),x.c);}).join('')+'</div></div>';
+    }
+
+    // plan adherence
+    var pl=0,pd=0;
+    days.forEach(function(d){var items=S.plan[fromIso(d).getDay()]||[];if(!items.length)return;var l=getLog(d,false),dn2=l&&l.planDone?l.planDone:{};items.forEach(function(it){pl++;if(dn2[it.id])pd++;});});
+    if(pl>0)h+='<div class="card"><h2>پایبندی به برنامه هفتگی</h2>'+hbar(num(pd)+' از '+num(pl)+' کار برنامه‌ریزی‌شده انجام شد',pd/pl,pctTxt(pd/pl))+'</div>';
+  }
+
+  // weekday pattern
+  if(bestW!=null){
+    var wb=order.map(function(w){var v=wdCnt[w]?wdSum[w]/wdCnt[w]:0;return {v:v,t:wdCnt[w]?num(Math.round(v*100)):null,l:WD_SHORT[w],c:(w===bestW?'var(--amber)':null)};}).reverse();
+    h+='<div class="card"><h2>الگوی هفتگی</h2><div class="muted" style="margin:-4px 0 4px">میانگین تمرین هر روز هفته در ۸ هفته اخیر</div>'+barChart(wb,{vals:true})+'<div class="muted">روز طلایی: <b>'+WD_NAME[bestW]+'</b> ⭐</div></div>';
+  }
+
+  // feeling chart
+  var fd=lastDays(Math.min(n,30)),fc=feelChart(fd);
+  h+='<div class="card"><h2>حال و روحیه</h2>';
+  if(fc.count>=2){var avgE=['😣','😕','😐','🙂','😄'][Math.min(4,Math.max(0,Math.round(fc.avg)-1))];h+=fc.svg+'<div class="muted">میانگین حال خودت: '+avgE+'</div>';}
+  else h+='<div class="muted" style="padding:6px 0">هر روز در صفحه «امروز» حالت را ثبت کن تا نمودارش اینجا ساخته شود.</div>';
+  h+='</div>';
+
+  // pool per week (8 weeks)
+  var ws=weekStart(todayIso()),pb=[],anyPool=false;
+  for(var wi=7;wi>=0;wi--){
+    var st=addDays(ws,-7*wi),c=0;
+    for(var di=0;di<7;di++){var dx=addDays(st,di);if(dx>todayIso())break;var lx=getLog(dx,false);if(lx&&lx.pool===true)c++;}
+    if(c>0)anyPool=true;
+    pb.push({v:c/7,t:num(c),l:fmtShort(st)});
+  }
+  h+='<div class="card"><h2>🏊 استخر در ۸ هفته اخیر</h2>'+(anyPool?barChart(pb,{max:1,yfmt:function(v){return num(Math.round(v*7));},vals:true,lf:9,every:2,c:null}):'<div class="muted" style="padding:6px 0">هنوز استخری ثبت نشده. استخر برای دست عالی است 😉</div>')+'</div>';
+
+  // heatmap
+  h+='<div class="card"><h2>تقویم ۲۸ روز اخیر</h2><div class="heat">';
+  for(var k=27;k>=0;k--){var dh=addDays(todayIso(),-k),ph2=dayPct(dh);h+='<i title="'+esc(fmtShort(dh))+'" style="'+(ph2==null?'':'background:var(--accent);opacity:'+(0.2+0.8*ph2).toFixed(2))+'"></i>';}
+  h+='</div><div class="muted" style="margin-top:8px">هر مربع یک روز؛ پررنگ‌تر یعنی تمرین بیشتر.</div></div>';
+
+  // badges + next hint
+  var B=badgeList(),nextB=null,bestRatio=-1;
+  B.forEach(function(b){if(b[2]<b[3]){var r=b[2]/b[3];if(r>bestRatio){bestRatio=r;nextB=b;}}});
+  h+='<div class="card"><h2>نشان‌ها</h2><div class="badges">'+B.map(function(b){return '<div class="badge'+(b[2]>=b[3]?' got':'')+'"><span>'+b[0]+'</span>'+b[1]+'</div>';}).join('')+'</div>'+
+    (nextB?'<div class="msg" style="margin:12px 0 0">نزدیک‌ترین نشان: '+nextB[0]+' «'+nextB[1]+'» — '+num(nextB[3]-nextB[2])+' تا مانده</div>':'<div class="msg" style="margin:12px 0 0">همه نشان‌ها را گرفتی! 👑</div>')+'</div>';
+
+  // timeline
+  var ev=[];
+  S.visits.forEach(function(v){ev.push({d:v.date,t:v.newProgram?'🩺 ویزیت دکتر و برنامه جدید':'🩺 ویزیت دکتر',n:v.note});});
+  S.exercises.forEach(function(e){ev.push({d:e.addedAt,t:'💪 حرکت اضافه شد: '+e.name});});
+  ev.sort(function(a,b){return a.d<b.d?1:-1;});
+  if(ev.length){
+    h+='<div class="card"><h2>خط زمانی</h2>';
+    ev.slice(0,20).forEach(function(x){h+='<div class="tl"><div><span class="dot"></span><b>'+esc(x.t)+'</b></div><div class="muted">'+esc(fmtFull(x.d))+'</div>'+(x.n?'<div class="muted">'+esc(x.n)+'</div>':'')+'</div>';});
+    h+='</div>';
+  }
+  return h;
+}
+function countPool(){var n=0;for(var k in S.logs){if(S.logs[k].pool===true)n++;}return n;}
+
+function render(){
+  renderNav();
+  var app=document.getElementById('app');
+  app.innerHTML=tab==='today'?viewToday():tab==='plan'?viewPlan():tab==='ex'?viewEx():tab==='prog'?viewProg():tab==='doc'?viewDoc():viewRep();
+  hydrate();
+  if(tab==='prog')bindCompare();
+}
+
+function bindCompare(){
+  var r=document.getElementById('cmpRange');if(!r)return;
+  var top=document.getElementById('cmpTop'),line=document.getElementById('cmpLine'),knob=document.getElementById('cmpKnob');
+  function upd(){var v=r.value;top.style.clipPath='inset(0 0 0 '+v+'%)';line.style.left=v+'%';knob.style.left=v+'%';}
+  r.addEventListener('input',upd);upd();
+}
+
+/* ---------- actions ---------- */
+function confetti(){
+  var box=document.getElementById('confetti'),cols=['#0f9d8a','#1b6ca8','#ffb020','#ef5da8','#7bd88f','#ffffff'];
+  var s='';
+  for(var i=0;i<44;i++){s+='<i style="left:'+(Math.random()*100).toFixed(1)+'%;background:'+cols[i%cols.length]+';animation-duration:'+(1.6+Math.random()*1.6).toFixed(2)+'s;animation-delay:'+(Math.random()*.5).toFixed(2)+'s"></i>';}
+  box.innerHTML=s;setTimeout(function(){box.innerHTML='';},3600);
+}
+function setAmt(id,v){
+  var before=dayPct(viewDate);
+  var l=getLog(viewDate,true);v=Math.max(0,Math.min(9999,Math.floor(v)||0));
+  if(v===0)delete l.ex[id];else l.ex[id]=v;
+  save();render();
+  var after=dayPct(viewDate);
+  if(after!=null&&after>=0.999&&(before==null||before<0.999)){confetti();if(navigator.vibrate)try{navigator.vibrate(60);}catch(e){}}
+}
+function curAmt(id){var l=getLog(viewDate,false);return l&&l.ex[id]?l.ex[id]:0;}
+function findEx(id){return S.exercises.filter(function(e){return e.id===id;})[0];}
+
+function showModal(html){document.getElementById('mbox').innerHTML=html;document.getElementById('modal').classList.add('show');}
+function closeModal(){
+  clearInterval(slideT);slideT=null;viewer=null;
+  var m=document.getElementById('modal'),v=m.querySelector('video');if(v)v.pause();
+  m.classList.remove('show');document.getElementById('mbox').innerHTML='';
+  if(m._url){URL.revokeObjectURL(m._url);m._url=null;}
+}
+function openVideo(id){
+  iGet('v',id).then(function(blob){
+    if(!blob){toast('فیلم پیدا نشد');return;}
+    var url=URL.createObjectURL(blob);
+    showModal('<video src="'+url+'" controls playsinline autoplay></video><div style="margin-top:12px"><button data-a="closeModal">بستن</button></div>');
+    document.getElementById('modal')._url=url;
+  }).catch(function(){toast('پخش فیلم ممکن نشد');});
+}
+function showViewer(){
+  var v=viewer;if(!v)return;
+  var d=v.list[v.idx];
+  showModal('<img class="vimg" id="vimg" alt=""><div class="vinfo"><b>'+esc(fmtFull(d))+'</b><div style="opacity:.8">'+num(v.idx+1)+' از '+num(v.list.length)+'</div></div>'+
+    '<div class="row" style="justify-content:center;flex-wrap:wrap"><button data-a="vNext">‹ بعدی</button><button data-a="vPlay">'+(slideT?'⏸ توقف':'▶ پخش')+'</button><button data-a="vPrev">قبلی ›</button></div>'+
+    '<div class="row" style="justify-content:center;margin-top:10px"><button data-a="vDel" style="color:#ff9c9c">حذف عکس</button><button data-a="closeModal">بستن</button></div>');
+  photoUrls(d).then(function(u){var im=document.getElementById('vimg');if(u&&im)im.src=u.full;});
+}
+function vMove(n){
+  if(!viewer)return;var L=viewer.list.length;viewer.idx=(viewer.idx+n+L)%L;showViewer();
+}
+function toggleSlide(){
+  if(slideT){clearInterval(slideT);slideT=null;showViewer();return;}
+  if(viewer.idx>=viewer.list.length-1)viewer.idx=0;
+  showViewer();
+  slideT=setInterval(function(){
+    if(!viewer){clearInterval(slideT);slideT=null;return;}
+    if(viewer.idx>=viewer.list.length-1){clearInterval(slideT);slideT=null;showViewer();return;}
+    viewer.idx++;showViewer();
+  },650);
+}
+
+function saveEx(){
+  var name=document.getElementById('fName').value.trim();
+  if(!name){toast('اسم حرکت را بنویس');return;}
+  var desc=document.getElementById('fDesc').value.trim();
+  var target=Math.max(1,parseInt(document.getElementById('fTarget').value,10)||1);
+  var unit=document.getElementById('fUnit').value;
+  var e,isNew=editing==='new';
+  if(isNew){e={id:uid(),addedAt:todayIso(),hasVideo:false};S.exercises.push(e);}else e=findEx(editing);
+  if(!e)return;
+  e.name=name;e.desc=desc;e.target=target;e.unit=unit;
+  var jobs=[];
+  if(removeVideo&&e.hasVideo){e.hasVideo=false;jobs.push(iDel('v',e.id));}
+  if(pendingFile){jobs.push(iPut('v',e.id,pendingFile).then(function(){e.hasVideo=true;}));}
+  Promise.all(jobs).then(function(){editing=null;pendingFile=null;removeVideo=false;save();render();toast('ذخیره شد');})
+  .catch(function(){toast('فیلم ذخیره نشد؛ شاید جای گوشی کم است');save();render();});
+}
+
+function doExport(){
+  var data=JSON.stringify(S),name='rehab-backup-'+todayIso()+'.json';
+  var blob=new Blob([data],{type:'application/json'});
+  try{
+    var f=new File([blob],name,{type:'application/json'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).catch(function(){});return;}
+  }catch(e){}
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+}
+
+document.addEventListener('click',function(ev){
+  var el=ev.target.closest('[data-a]');if(!el)return;
+  var a=el.getAttribute('data-a'),id=el.getAttribute('data-id');
+  switch(a){
+    case 'tab':tab=id;editing=null;pendingFile=null;removeVideo=false;render();window.scrollTo(0,0);break;
+    case 'prev':viewDate=addDays(viewDate,-1);render();break;
+    case 'next':if(viewDate<todayIso()){viewDate=addDays(viewDate,1);render();}break;
+    case 'goToday':viewDate=todayIso();render();break;
+    case 'inc':setAmt(id,curAmt(id)+1);break;
+    case 'dec':setAmt(id,curAmt(id)-1);break;
+    case 'full':var e0=findEx(id);setAmt(id,curAmt(id)>=e0.target?0:e0.target);break;
+    case 'pool':var l=getLog(viewDate,true),want=id==='yes';l.pool=l.pool===want?null:want;save();render();break;
+    case 'feel':var l2=getLog(viewDate,true),f=parseInt(id,10);l2.feel=l2.feel===f?null:f;save();render();break;
+    case 'addAct':var inp=document.getElementById('actIn'),t=inp.value.trim();if(!t)break;getLog(viewDate,true).acts.push({text:t});save();render();break;
+    case 'delAct':getLog(viewDate,true).acts.splice(parseInt(id,10),1);save();render();break;
+    case 'addPlan':
+      var pin=document.getElementById('pIn'+id),pt=pin.value.trim();if(!pt)break;
+      (S.plan[id]=S.plan[id]||[]).push({id:uid(),text:pt});save();render();break;
+    case 'delPlan':
+      var pp=id.split('|');S.plan[pp[0]]=(S.plan[pp[0]]||[]).filter(function(x){return x.id!==pp[1];});save();render();break;
+    case 'planDone':
+      var lp=getLog(viewDate,true);lp.planDone=lp.planDone||{};
+      if(lp.planDone[id])delete lp.planDone[id];else lp.planDone[id]=true;
+      save();render();break;
+    case 'play':openVideo(id);break;
+    case 'closeModal':closeModal();break;
+    case 'takePhoto':photoTarget=id;document.getElementById('photoIn').click();break;
+    case 'viewPhoto':var ds=photoDates();viewer={list:ds,idx:Math.max(0,ds.indexOf(id))};showViewer();break;
+    case 'slideshow':var ds2=photoDates();viewer={list:ds2,idx:0};toggleSlide();break;
+    case 'vNext':clearInterval(slideT);slideT=null;vMove(1);break;
+    case 'vPrev':clearInterval(slideT);slideT=null;vMove(-1);break;
+    case 'vPlay':toggleSlide();break;
+    case 'vDel':
+      if(viewer&&confirm('این عکس حذف شود؟')){
+        var dd=viewer.list[viewer.idx];
+        iDel('p',dd).catch(function(){}).then(function(){dropUrls(dd);delete S.photos[dd];save();closeModal();render();toast('حذف شد');});
+      }break;
+    case 'newEx':editing='new';pendingFile=null;removeVideo=false;render();break;
+    case 'editEx':editing=id;pendingFile=null;removeVideo=false;render();window.scrollTo(0,0);break;
+    case 'cancelEx':editing=null;pendingFile=null;removeVideo=false;render();break;
+    case 'rmVideo':removeVideo=true;var n1=document.getElementById('fName').value,d1=document.getElementById('fDesc').value;render();document.getElementById('fName').value=n1;document.getElementById('fDesc').value=d1;break;
+    case 'saveEx':saveEx();break;
+    case 'archEx':if(confirm('این حرکت کنار گذاشته شود؟ تاریخچه‌اش می‌ماند.')){findEx(id).archivedAt=todayIso();save();render();}break;
+    case 'restoreEx':var r=findEx(id);delete r.archivedAt;save();render();break;
+    case 'addVisit':
+      S.visits.push({id:uid(),date:document.getElementById('vDate').value||todayIso(),note:document.getElementById('vNote').value.trim(),newProgram:document.getElementById('vNew').checked});
+      save();render();toast('ویزیت ثبت شد');break;
+    case 'delVisit':if(confirm('این ویزیت حذف شود؟')){S.visits=S.visits.filter(function(v){return v.id!==id;});save();render();}break;
+    case 'range':rangeDays=parseInt(id,10);render();break;
+    case 'export':doExport();break;
+    case 'importPick':document.getElementById('impFile').click();break;
+  }
+});
+document.addEventListener('change',function(ev){
+  var el=ev.target;
+  if(el.id==='photoIn'){var pf=el.files&&el.files[0];el.value='';if(pf)handlePhoto(pf);return;}
+  var k=el.getAttribute&&el.getAttribute('data-in');if(!k)return;
+  if(k==='amt'){setAmt(el.getAttribute('data-id'),parseFloat(el.value));}
+  else if(k==='file'){pendingFile=el.files&&el.files[0]?el.files[0]:null;if(pendingFile)toast('فیلم انتخاب شد');}
+  else if(k==='cmpA'){cmpA=el.value;render();}
+  else if(k==='cmpB'){cmpB=el.value;render();}
+  else if(k==='goal'){S.goal=parseInt(el.value,10)||5;save();toast('ذخیره شد');}
+  else if(k==='name'){var nm=el.value.trim();if(nm){S.name=nm;save();toast('ذخیره شد');}}
+  else if(k==='import'){
+    var f=el.files&&el.files[0];if(!f)return;
+    var rd=new FileReader();
+    rd.onload=function(){
+      try{var d=JSON.parse(rd.result);if(!d||!Array.isArray(d.exercises)||typeof d.logs!=='object')throw 0;
+        if(confirm('اطلاعات فعلی با پشتیبان جایگزین شود؟ (عکس‌ها و فیلم‌های روی این گوشی دست نمی‌خورند)')){
+          var keepPhotos=S.photos;
+          S={name:d.name||'سید محمد',exercises:d.exercises,logs:d.logs||{},visits:d.visits||[],plan:d.plan||{},goal:d.goal||5,photos:keepPhotos||{}};
+          save();render();toast('بازیابی شد');
+        }
+      }catch(x){toast('فایل پشتیبان معتبر نیست');}
+    };
+    rd.readAsText(f);
+  }
+});
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'&&ev.target.id==='actIn'){ev.preventDefault();var b=document.querySelector('[data-a="addAct"]');if(b)b.click();}
+  else if(ev.key==='Enter'&&ev.target.id&&ev.target.id.indexOf('pIn')===0){ev.preventDefault();var b2=ev.target.parentNode.querySelector('button');if(b2)b2.click();}
+});
+document.getElementById('modal').addEventListener('click',function(ev){if(ev.target.id==='modal')closeModal();});
+
+// day rollover: if app stayed open past midnight
+setInterval(function(){var t=todayIso();if(render._d&&render._d!==t&&viewDate===render._d){viewDate=t;render();}render._d=t;},60000);
+render._d=todayIso();
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+render();
+})();
+</script>
+</body>
+</html>
